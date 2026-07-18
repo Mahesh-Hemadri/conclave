@@ -1,7 +1,7 @@
-from core.registry import AgentRegistry
-from core.planner import Planner
-from core.state import ArenaState
-from engine.execution import ExecutionEngine
+from app.core.registry import AgentRegistry
+from app.core.planner import Planner
+from app.core.state import ArenaState
+from app.engine.execution import ExecutionEngine
 
 class Arena:
 
@@ -16,7 +16,7 @@ class Arena:
 
         self.registry.register(agent)
 
-    from core.state import ArenaState
+    from app.core.state import ArenaState
 
 
     def solve(self, query):

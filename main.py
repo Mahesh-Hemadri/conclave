@@ -1,8 +1,8 @@
-from core.arena import Arena
+from app.core.arena import Arena
 
-from agents.architect import ArchitectAgent
-from agents.backend import BackendAgent
-from agents.security import SecurityAgent
+from app.agents.architect import ArchitectAgent
+from app.agents.backend import BackendAgent
+from app.agents.security import SecurityAgent
 
 
 arena = Arena()

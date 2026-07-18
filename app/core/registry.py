@@ -1,6 +1,6 @@
 from typing import List
 
-from agents.base_agent import BaseAgent
+from app.agents.base_agent import BaseAgent
 
 
 class AgentRegistry:
