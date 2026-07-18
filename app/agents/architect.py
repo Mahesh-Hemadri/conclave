@@ -5,7 +5,7 @@ from app.core.state import ArenaState
 
 class ArchitectAgent(BaseAgent):
 
-    def __init__(self):
+    def __init__(self, provider):
 
         super().__init__(
 
@@ -28,19 +28,26 @@ class ArchitectAgent(BaseAgent):
                 confidence=0.95,
 
                 provider="gemini",
-            )
+            ),
+            provider
         )
 
-    def execute(
-        self,
-        state: ArenaState,
-    ) -> ArenaState:
+    def execute(self, state):
+
+        prompt = f"""
+    You are a Principal Software Architect.
+
+    User Request:
+    {state["user_query"]}
+
+    Provide ONLY architecture recommendations.
+
+    Maximum 200 words.
+    """
 
         reasoning = state.get("reasoning", {})
 
-        reasoning[self.name] = (
-            "Recommended a Microservices architecture."
-        )
+        reasoning[self.name] = self.provider.generate(prompt)
 
         state["reasoning"] = reasoning
 

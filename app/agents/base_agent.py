@@ -2,15 +2,18 @@ from abc import ABC, abstractmethod
 
 from app.core.state import ArenaState
 from app.models.agent import AgentMetadata
+from app.providers.base_provider import BaseProvider
 
 
 class BaseAgent(ABC):
-    """
-    Base class for every Conclave agent.
-    """
 
-    def __init__(self, metadata: AgentMetadata):
+    def __init__(
+        self,
+        metadata: AgentMetadata,
+        provider: BaseProvider,
+    ):
         self.metadata = metadata
+        self.provider = provider
 
     @property
     def name(self):

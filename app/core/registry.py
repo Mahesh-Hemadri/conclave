@@ -8,7 +8,7 @@ class AgentRegistry:
     Stores and discovers agents.
     """
 
-    def __init__(self):
+    def __init__(self, provider=None):
         self._agents: List[BaseAgent] = []
 
     def register(self, agent: BaseAgent):
