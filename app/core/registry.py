@@ -28,7 +28,7 @@ class AgentRegistry:
             in [c.lower() for c in agent.capabilities]
         ]
 
-    def get_matching_agents(self, agent_names: List[str]):
+    def get_selected_agents(self, agent_names: List[str]):
 
         matched = []
 
@@ -54,6 +54,9 @@ class AgentRegistry:
         agents = []
 
         for agent in self._agents:
+            
+            if agent.name == "Judge":
+                continue
 
             agents.append(
                 {

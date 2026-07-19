@@ -22,9 +22,21 @@ class JudgeAgent(BaseAgent):
         prompt = f"""
 You are the Lead Software Architect.
 
-Combine the following expert opinions into ONE final recommendation.
+You have received responses from multiple experts.
+
+Your responsibilities:
+
+- Merge the responses.
+- Remove duplicate information.
+- Resolve any conflicting recommendations.
+- Organize the answer into clear sections.
+- Produce a professional final recommendation.
+
+Expert Responses:
 
 {state["reasoning"]}
+
+Return only the final answer.
 """
 
         state["final_answer"] = self.provider.generate(prompt)

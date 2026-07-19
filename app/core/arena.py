@@ -1,7 +1,10 @@
+from app.agents.judge import JudgeAgent
 from app.core.registry import AgentRegistry
 from app.core.planner import Planner
 from app.core.state import ArenaState
 from app.engine.execution import ExecutionEngine
+from app.providers.gemini_provider import GeminiProvider
+
 
 
 class Arena:
@@ -12,6 +15,9 @@ class Arena:
 
         self.planner = Planner()
         self.engine = ExecutionEngine()
+        provider = GeminiProvider()
+
+        self.judge = JudgeAgent(provider)
 
     def register_agent(self, agent):
 
@@ -29,13 +35,13 @@ class Arena:
             available
         )
 
-        agents = self.registry.get_matching_agents(required)
+        agents = self.registry.get_selected_agents(required)
 
         state: ArenaState = {
 
             "user_query": query,
 
-            "required_capabilities": required,
+            "selected_experts": required,
 
             "selected_agents": [a.name for a in agents],
 
@@ -49,4 +55,7 @@ class Arena:
             agents
         )
 
+        state = self.judge.execute(state)
+
         return state
+    

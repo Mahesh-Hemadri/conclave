@@ -22,4 +22,7 @@ state = arena.solve(
 
 print()
 
-print(state)
+print("\n" + "=" * 60)
+print("FINAL ANSWER")
+print("=" * 60)
+print(state["final_answer"])

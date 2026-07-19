@@ -8,29 +8,45 @@ class Planner:
 
         self.provider = GeminiProvider()
         
+    def format_agents(self, available_agents):
+
+        formatted = []
+
+        for agent in available_agents:
+
+            formatted.append(
+                f"""
+    Expert: {agent['name']}
+    Role: {agent['role']}
+    Description: {agent['description']}
+    """
+            )
+
+        return "\n".join(formatted)
+        
     def plan(self, query, available_agents):
+        agent_context = self.format_agents(available_agents)
 
         prompt = f"""
 You are the planning agent for an AI software engineering team.
 
 Available experts:
 
-{available_agents}
+{agent_context}
 
 User request:
 
 {query}
 
-Your job is to decide which experts are required.
+Your task is to decide which experts are needed.
 
-Return ONLY a JSON array containing the expert names.
+Return ONLY a JSON array.
 
 Example:
 
-["Architect", "Backend"]
+["Architect","Backend"]
 
-Do not explain.
-Return only valid JSON.
+Return only JSON.
 """
 
         response = self.provider.generate(prompt)
