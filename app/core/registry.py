@@ -28,26 +28,39 @@ class AgentRegistry:
             in [c.lower() for c in agent.capabilities]
         ]
 
-    def get_matching_agents(self, capabilities: List[str]):
+    def get_matching_agents(self, agent_names: List[str]):
 
         matched = []
 
-        for capability in capabilities:
+        for agent in self._agents:
 
-            matched.extend(self.get_by_capability(capability))
+            if agent.name.lower() in [name.lower() for name in agent_names]:
+                matched.append(agent)
 
-        # Remove duplicates
+        return matched
+    
+    def available_capabilities(self):
 
-        unique = []
+        capabilities = set()
 
-        seen = set()
+        for agent in self._agents:
 
-        for agent in matched:
+            capabilities.update(agent.capabilities)
 
-            if agent.name not in seen:
+        return sorted(capabilities)
+    
+    def available_agents(self):
 
-                unique.append(agent)
+        agents = []
 
-                seen.add(agent.name)
+        for agent in self._agents:
 
-        return unique
+            agents.append(
+                {
+                    "name": agent.name,
+                    "role": agent.role,
+                    "description": agent.metadata.description,
+                }
+            )
+
+        return agents

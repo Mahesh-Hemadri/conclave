@@ -1,26 +1,47 @@
+import json
+
+from app.providers.gemini_provider import GeminiProvider
+
 class Planner:
 
-    """
-    Decides what capabilities
-    are required.
-    """
+    def __init__(self):
 
-    def plan(self, query: str):
+        self.provider = GeminiProvider()
+        
+    def plan(self, query, available_agents):
 
-        query = query.lower()
+        prompt = f"""
+You are the planning agent for an AI software engineering team.
 
-        capabilities = []
+Available experts:
 
-        if "architecture" in query:
+{available_agents}
 
-            capabilities.append("architecture")
+User request:
 
-        if "api" in query:
+{query}
 
-            capabilities.append("backend")
+Your job is to decide which experts are required.
 
-        if "security" in query:
+Return ONLY a JSON array containing the expert names.
 
-            capabilities.append("security")
+Example:
 
-        return capabilities
+["Architect", "Backend"]
+
+Do not explain.
+Return only valid JSON.
+"""
+
+        response = self.provider.generate(prompt)
+
+        print("Planner Response:", response)
+
+        try:
+            return json.loads(response)
+
+        except Exception:
+
+            return []
+
+    

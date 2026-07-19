@@ -3,6 +3,7 @@ from app.core.planner import Planner
 from app.core.state import ArenaState
 from app.engine.execution import ExecutionEngine
 
+
 class Arena:
 
     def __init__(self):
@@ -16,12 +17,17 @@ class Arena:
 
         self.registry.register(agent)
 
-    from app.core.state import ArenaState
+    
 
 
     def solve(self, query):
 
-        required = self.planner.plan(query)
+        available = self.registry.available_agents()
+
+        required = self.planner.plan(
+            query,
+            available
+        )
 
         agents = self.registry.get_matching_agents(required)
 
