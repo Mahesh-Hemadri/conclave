@@ -26,3 +26,11 @@ print("\n" + "=" * 60)
 print("FINAL ANSWER")
 print("=" * 60)
 print(state["final_answer"])
+
+print("\nExecution Timeline")
+print("-" * 40)
+
+for item in state["execution_history"]:
+    print(
+        f"{item['agent']} : {item['duration']} sec"
+    )

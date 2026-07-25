@@ -17,6 +17,8 @@ class ArenaState(TypedDict):
 
     # Individual agent reasoning
     reasoning: Dict[str, str]
+    
+    execution_history: List[Dict]
 
     # Final synthesized answer
     final_answer: str

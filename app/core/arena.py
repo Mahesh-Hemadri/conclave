@@ -46,6 +46,8 @@ class Arena:
             "selected_agents": [a.name for a in agents],
 
             "reasoning": {},
+            
+            "execution_history": [],
 
             "final_answer": "",
         }
