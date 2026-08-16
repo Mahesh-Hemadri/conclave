@@ -2,11 +2,13 @@ from app.agents.base_agent import BaseAgent
 
 from app.core.state import ArenaState
 from app.models.agent import AgentMetadata
+from app.utils.prompt_loader import PromptLoader
+from app.providers.request import ProviderRequest
 
 
 class BackendAgent(BaseAgent):
 
-    def __init__(self,provider):
+    def __init__(self,provider, tool_executor = None):
         super().__init__(
             AgentMetadata(
                 name="Backend",
@@ -21,32 +23,27 @@ class BackendAgent(BaseAgent):
                 confidence=0.90,
                 provider="gemini",
             ),
-            provider
+            provider,
+            tool_executor
         )
 
     def execute(self, state):
 
-        prompt = f"""
-    You are a Senior Backend Engineer.
+        template = PromptLoader.load("backend.md")
 
-    User Request:
-    {state["user_query"]}
-
-    Design the backend APIs.
-
-    Discuss:
-
-    - REST APIs
-    - Database
-    - Services
-    - Scalability
-
-    Maximum 200 words.
-    """
+        prompt = template.format(
+            query=state["user_query"]
+        )
 
         reasoning = state.get("reasoning", {})
 
-        reasoning[self.name] = self.provider.generate(prompt)
+        request = ProviderRequest(
+            prompt=prompt
+        )
+
+        response = self.provider.generate(request)
+
+        reasoning[self.name] = response.text
 
         state["reasoning"] = reasoning
 

@@ -1,11 +1,13 @@
 from app.agents.base_agent import BaseAgent
 from app.models.agent import AgentMetadata
+from app.utils.prompt_loader import PromptLoader
 from app.core.state import ArenaState
+from app.providers.request import ProviderRequest
 
 
 class ArchitectAgent(BaseAgent):
 
-    def __init__(self, provider):
+    def __init__(self, provider, tool_executor = None):
 
         super().__init__(
 
@@ -29,26 +31,29 @@ class ArchitectAgent(BaseAgent):
 
                 provider="gemini",
             ),
-            provider
+            provider,
+            tool_executor
         )
 
     def execute(self, state):
+        template = PromptLoader.load("architect.md")
 
-        prompt = f"""
-    You are a Principal Software Architect.
+        prompt = template.format(
+            query=state["user_query"]
+        )
 
-    User Request:
-    {state["user_query"]}
+        request = ProviderRequest(
+            prompt=prompt
+        )
 
-    Provide ONLY architecture recommendations.
-
-    Maximum 200 words.
-    """
+        response = self.provider.generate(request)
 
         reasoning = state.get("reasoning", {})
 
-        reasoning[self.name] = self.provider.generate(prompt)
+        reasoning[self.name] = response.text
 
         state["reasoning"] = reasoning
 
         return state
+
+       

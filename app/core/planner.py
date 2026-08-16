@@ -1,12 +1,12 @@
 import json
 
-from app.providers.gemini_provider import GeminiProvider
-
+from app.providers.request import ProviderRequest
+from app.utils.prompt_loader import PromptLoader
 class Planner:
 
-    def __init__(self):
+    def __init__(self, provider):
 
-        self.provider = GeminiProvider()
+        self.provider = provider
         
     def format_agents(self, available_agents):
 
@@ -27,34 +27,23 @@ class Planner:
     def plan(self, query, available_agents):
         agent_context = self.format_agents(available_agents)
 
-        prompt = f"""
-You are the planning agent for an AI software engineering team.
+        template = PromptLoader.load("planner.md")
 
-Available experts:
+        prompt = template.format(
+            available_agents=agent_context,
+            query=query
+        )
 
-{agent_context}
+        request = ProviderRequest(
+            prompt=prompt
+        )
 
-User request:
+        response = self.provider.generate(request)
 
-{query}
-
-Your task is to decide which experts are needed.
-
-Return ONLY a JSON array.
-
-Example:
-
-["Architect","Backend"]
-
-Return only JSON.
-"""
-
-        response = self.provider.generate(prompt)
-
-        print("Planner Response:", response)
+        print("Planner Response:", response.text)
 
         try:
-            return json.loads(response)
+            return json.loads(response.text)
 
         except Exception:
 

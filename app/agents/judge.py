@@ -1,11 +1,13 @@
 from app.agents.base_agent import BaseAgent
 from app.core.state import ArenaState
 from app.models.agent import AgentMetadata
-
+from app.providers import request
+from app.utils.prompt_loader import PromptLoader
+from app.providers.request import ProviderRequest
 
 class JudgeAgent(BaseAgent):
 
-    def __init__(self, provider):
+    def __init__(self, provider, tool_executor = None):
 
         super().__init__(
             AgentMetadata(
@@ -14,31 +16,23 @@ class JudgeAgent(BaseAgent):
                 description="Synthesizes all agent responses.",
                 capabilities=["judge"],
             ),
-            provider
+            provider,
+            tool_executor
         )
 
     def execute(self, state):
 
-        prompt = f"""
-You are the Lead Software Architect.
+        template = PromptLoader.load("judge.md")
 
-You have received responses from multiple experts.
+        prompt = template.format(
+            reasoning=state["reasoning"]
+        )
+        request = ProviderRequest(
+            prompt=prompt
+        )
 
-Your responsibilities:
+        response = self.provider.generate(request)
 
-- Merge the responses.
-- Remove duplicate information.
-- Resolve any conflicting recommendations.
-- Organize the answer into clear sections.
-- Produce a professional final recommendation.
-
-Expert Responses:
-
-{state["reasoning"]}
-
-Return only the final answer.
-"""
-
-        state["final_answer"] = self.provider.generate(prompt)
+        state["final_answer"] = response.text
 
         return state

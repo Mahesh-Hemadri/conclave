@@ -11,9 +11,11 @@ class BaseAgent(ABC):
         self,
         metadata: AgentMetadata,
         provider: BaseProvider,
+        tool_executor=None
     ):
         self.metadata = metadata
         self.provider = provider
+        self.tool_executor = tool_executor
 
     @property
     def name(self):
