@@ -10,13 +10,15 @@ class ArenaState(TypedDict):
     user_query: str
 
     # Planner output
-    required_capabilities: List[str]
+    selected_experts: List[str]
 
     # Selected agents
     selected_agents: List[str]
 
     # Individual agent reasoning
     reasoning: Dict[str, str]
+    
+    execution_history: List[Dict]
 
     # Final synthesized answer
     final_answer: str
