@@ -61,6 +61,17 @@ class Arena:
             available
         )
 
+        # Handle planner failure explicitly
+        if not required:
+            return {
+                "user_query": query,
+                "selected_experts": [],
+                "selected_agents": [],
+                "reasoning": {},
+                "execution_history": [],
+                "final_answer": "Unable to generate a valid execution plan."
+            }
+
         agents = self.registry.get_selected_agents(required)
 
         state: ArenaState = {
@@ -86,4 +97,3 @@ class Arena:
         state = self.judge.execute(state)
 
         return state
-    
